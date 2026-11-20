@@ -1,0 +1,34 @@
+site_name: NUH SACT Data
+site_url: https://health-informatics-uon.github.io/nuh-data-sact/
+repo_url: https://github.com/health-informatics-uon/nuh-data-sact
+docs_dir: docs
+
+theme:
+  name: material
+  custom_dir: overrides
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+  font:
+    text: Lato
+
+extra:
+  generator: false
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - tables
+  - toc:
+      permalink: true
+  - admonition
+  - md_in_html
+  - pymdownx.highlight
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format

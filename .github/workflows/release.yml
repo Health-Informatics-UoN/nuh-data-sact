@@ -1,0 +1,65 @@
+# This workflow is used to release the project.
+# It is triggered by a push to the main branch.
+# And run semantic release
+
+name: Release
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  packages: write
+  id-token: write
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    uses: health-informatics-uon/workflows/.github/workflows/semantic-release.yml@1.6.1
+    with:
+      node-version: "24"
+    secrets: inherit
+
+  # DISABLED: attaching data dictionary CSVs to the release.
+  #
+  # This job runs after semantic-release has already *published* the release,
+  # but the repository uses immutable releases, so GitHub rejects the upload:
+  #   "Cannot upload asset sact-datadict.csv to an immutable release. GitHub only
+  #    allows asset uploads before a release is published, so upload assets to a
+  #    draft release before you publish it."
+  # (seen in nuh-data, e.g. run 37295486776).
+  #
+  # To fix: generate the CSVs before the release is published and have
+  # semantic-release attach them itself (e.g. @semantic-release/exec to run
+  # scripts/gen_datadict.py plus the `assets` option of @semantic-release/github),
+  # or create the release as a draft, upload, then publish.
+  #
+  # datadict:
+  #   needs: release
+  #   if: needs.release.outputs.release-created == 'true'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout released tag
+  #       uses: actions/checkout@v7.0.1
+  #       with:
+  #         ref: ${{ needs.release.outputs.release-tag }}
+  #
+  #     - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+  #       with:
+  #         python-version: "3.13"
+  #         enable-cache: true
+  #         cache-dependency-glob: "uv.lock"
+  #
+  #     - name: Install dependencies
+  #       run: uv sync --group dev --no-progress
+  #
+  #     - name: Generate data dictionary CSVs
+  #       run: uv run python scripts/gen_datadict.py
+  #
+  #     - name: Attach CSVs to release
+  #       uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # 3.0.3
+  #       with:
+  #         tag_name: ${{ needs.release.outputs.release-tag }}
+  #         files: dist/*.csv

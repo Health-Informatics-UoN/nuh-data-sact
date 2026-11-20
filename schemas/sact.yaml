@@ -1,0 +1,753 @@
+id: https://health-informatics-uon.github.io/nuh-data-sact/schema
+name: sact
+title: NUH Systemic Anti-Cancer Therapy Dataset (SACT)
+description: >-
+  Clinical dataset documenting systemic anti-cancer treatment records from
+  Nottingham University Hospitals NHS Trust. Covers patients receiving systemic
+  anti-cancer therapies (chemotherapy and other systemic treatments) from 2009
+  onwards, capturing patient demographics, regimen details, cycle data, and
+  individual drug administrations.
+
+license: https://opensource.org/license/mit
+
+created_by: https://github.com/Health-Informatics-UoN
+
+annotations:
+  data_custodian: Nottingham University Hospitals NHS Trust
+  created_by_name: Nottingham University Hospitals NHS Trust
+  geographic_coverage: Nottinghamshire, England
+  temporal_coverage_start: "2009-01-01"
+  temporal_coverage_end: "2026-03-01"
+  population_size: "33156"
+  publishing_frequency: Quarterly
+  data_standards: OMOP, OTHER
+  controlled_vocabulary: OTHER
+  access_request_type: Data Access Request
+  access_status: In Progress
+
+keywords:
+  - systemic anti-cancer therapy
+  - SACT
+  - oncology
+  - chemotherapy
+  - NHS
+  - Nottingham
+  - cancer treatment
+  - clinical
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  sact: https://health-informatics-uon.github.io/nuh-data-sact/schema/
+  SNOMED: http://snomed.info/id/
+  ICD: http://id.who.int/icd/entity/
+  dmd: https://dmd.nhs.uk/concept/
+
+default_prefix: sact
+default_range: string
+
+imports:
+  - linkml:types
+
+classes:
+  SACTResearchView:
+    description: >-
+      Flat research view combining patient, regimen, cycle, and drug
+      administration data. Corresponds to RVW.SACT_RESEARCH_VIEW in the
+      source database. Each row represents a single drug administration
+      event, with regimen and patient context repeated per row.
+    tree_root: true
+    slots:
+      # ETL / provenance fields
+      - etl_id
+      - etl_date
+      - direct_care_published_runid
+      - dataset_name
+      - ndo_run_date
+      - file_name
+      - file_period_start
+      - file_period_end
+      # Patient fields
+      - pseudo_nhs_number
+      - nhs_number_status
+      - date_of_birth_year
+      - date_of_birth_month
+      - date_of_birth_mid_month
+      - person_stated_gender_code
+      - llsoa
+      # Clinician / organisation fields
+      - consultant_gmc_code
+      - consultant_spec_code
+      - org_id_code_provider
+      # Diagnosis fields
+      - primary_diagnosis
+      - morphology_icd_o
+      - diagnosis_code_snomed
+      # Regimen fields
+      - adjunctive_therapy
+      - intent_of_treatment
+      - regimen
+      - height_start_reg
+      - weight_start_of_reg
+      - perf_status_start_reg_ad
+      - co_morbidity_adjustment
+      - date_decision_to_treat
+      - start_date_regimen
+      - clinical_trial
+      # Cycle fields
+      - cycle_number
+      - start_date_cycle
+      - weight_start_cycle
+      - perf_stat_start_cycle_ad
+      # Drug administration fields
+      - drug_name
+      - dm_d
+      - actual_dose_per_admin
+      - admin_meas_per_actual_dose
+      - ot_admin_meas_per_actual_dose
+      - unit_meas_snomed_ct_dm_d
+      - sact_administration_route
+      - route_admin_snomed_ct_dm_d
+      - administration_date
+      - org_identifier_sact_admin
+
+slots:
+  # ---------------------------------------------------------------------------
+  # ETL / provenance
+  # ---------------------------------------------------------------------------
+
+  etl_id:
+    description: ""
+    range: integer
+    required: false
+    annotations:
+      sql_column: ETL_ID
+      sql_type: INT
+
+  etl_date:
+    description: ""
+    range: datetime
+    required: false
+    annotations:
+      sql_column: ETL_DATE
+      sql_type: DATETIME
+
+  direct_care_published_runid:
+    description: ""
+    range: integer
+    required: false
+    annotations:
+      sql_column: DIRECT_CARE_PUBLISHED_RUNID
+      sql_type: INT
+
+  dataset_name:
+    description: ""
+    range: string
+    required: false
+    annotations:
+      sql_column: DATASET_NAME
+      sql_type: "NVARCHAR(300)"
+
+  ndo_run_date:
+    description: ""
+    range: date
+    required: false
+    annotations:
+      sql_column: NDO_RUN_DATE
+      sql_type: DATE
+
+  file_name:
+    description: ""
+    range: string
+    required: false
+    annotations:
+      sql_column: FILE_NAME
+      sql_type: "NVARCHAR(150)"
+
+  file_period_start:
+    description: ""
+    range: string
+    required: false
+    annotations:
+      sql_column: FILE_PERIOD_START
+      sql_type: "NVARCHAR(20)"
+
+  file_period_end:
+    description: ""
+    range: string
+    required: false
+    annotations:
+      sql_column: FILE_PERIOD_END
+      sql_type: "NVARCHAR(20)"
+
+  # ---------------------------------------------------------------------------
+  # Patient
+  # ---------------------------------------------------------------------------
+
+  pseudo_nhs_number:
+    description: >-
+      The NHS NUMBER, the primary identifier of a PERSON, is a unique identifier
+      for a PATIENT within the NHS in England and Wales. Pseudonymised for
+      research use.
+    range: string
+    required: false
+    annotations:
+      sql_column: PSEUDO_NHS_NUMBER
+      sql_type: "VARBINARY(100)"
+      sensitivity: pseudonymised
+
+  nhs_number_status:
+    description: >-
+      The NHS NUMBER STATUS INDICATOR CODE indicates the verification status of
+      the NHS number provided.
+    range: NHSNumberStatusCode
+    required: false
+    annotations:
+      sql_column: NHS_NUMBER_STATUS
+      sql_type: "NVARCHAR(4)"
+
+  date_of_birth_year:
+    description: >-
+      Year component of the patient's date of birth, extracted from DATE OF
+      BIRTH for privacy preservation.
+    range: string
+    required: false
+    annotations:
+      sql_column: DATE_OF_BIRTH_YEAR
+      sql_type: "NVARCHAR(8)"
+
+  date_of_birth_month:
+    description: >-
+      Month component of the patient's date of birth, extracted from DATE OF
+      BIRTH for privacy preservation.
+    range: string
+    required: false
+    annotations:
+      sql_column: DATE_OF_BIRTH_MONTH
+      sql_type: "NVARCHAR(4)"
+
+  date_of_birth_mid_month:
+    description: >-
+      Approximate date of birth using the 15th of the birth month, for use in
+      age calculations while preserving patient privacy.
+    range: date
+    required: false
+    annotations:
+      sql_column: DATE_OF_BIRTH_MID_MONTH
+      sql_type: DATE
+
+  person_stated_gender_code:
+    description: >-
+      Person's gender as self-declared (or inferred by observation for those
+      unable to declare their PERSON STATED GENDER).
+    range: PersonStatedGenderCode
+    required: false
+    annotations:
+      sql_column: PERSON_STATED_GENDER_CODE
+      sql_type: "NVARCHAR(2)"
+
+  llsoa:
+    description: >-
+      Lower Layer Super Output Area, derived from PATIENT POSTCODE for
+      geographic analysis while preserving patient privacy.
+    range: string
+    required: false
+    annotations:
+      sql_column: LLSOA
+      sql_type: "NVARCHAR(18)"
+
+  # ---------------------------------------------------------------------------
+  # Clinician / organisation
+  # ---------------------------------------------------------------------------
+
+  consultant_gmc_code:
+    description: >-
+      Code of the consultant who initiated the SACT treatment. Derived from
+      the GENERAL MEDICAL COUNCIL REFERENCE NUMBER.
+    range: string
+    required: false
+    annotations:
+      sql_column: CONSULTANT_GMC_CODE
+      sql_type: "NVARCHAR(16)"
+
+  consultant_spec_code:
+    description: >-
+      Specialty code of the consultant who initiated the SACT treatment.
+    range: string
+    required: false
+    annotations:
+      sql_column: CONSULTANT_SPEC_CODE
+      sql_type: "NVARCHAR(16)"
+
+  org_id_code_provider:
+    description: >-
+      The ORGANISATION IDENTIFIER of the Organisation acting as a Health Care
+      Provider. Complies with ANANA standard DCB0090.
+    range: string
+    required: false
+    annotations:
+      sql_column: ORG_ID_CODE_PROVIDER
+      sql_type: "NVARCHAR(10)"
+
+  # ---------------------------------------------------------------------------
+  # Diagnosis
+  # ---------------------------------------------------------------------------
+
+  primary_diagnosis:
+    description: >-
+      Primary diagnosis at time of decision to treat, coded using ICD. This is
+      the PRIMARY DIAGNOSIS (ICD) at the start of the Systemic Anti-Cancer
+      Therapy.
+    range: string
+    required: false
+    annotations:
+      sql_column: PRIMARY_DIAGNOSIS
+      sql_type: "NVARCHAR(12)"
+
+  morphology_icd_o:
+    description: >-
+      Morphology coded using ICD-O at time of decision to treat. This is the
+      Morphology ICD-O at the start of the Systemic Anti-Cancer Therapy.
+      Required for Haematology cases.
+    range: string
+    required: false
+    annotations:
+      sql_column: MORPHOLOGY_ICD_O
+      sql_type: "NVARCHAR(14)"
+
+  diagnosis_code_snomed:
+    description: >-
+      SNOMED CT concept ID identifying the clinical diagnosis given to the
+      patient.
+    range: string
+    required: false
+    annotations:
+      sql_column: DIAGNOSIS_CODE_SNOMED
+      sql_type: "NVARCHAR(36)"
+      vocabulary: SNOMED CT
+
+  # ---------------------------------------------------------------------------
+  # Regimen
+  # ---------------------------------------------------------------------------
+
+  adjunctive_therapy:
+    description: >-
+      Adjunctive therapy is therapy given in addition to the main therapy to
+      maximise its effectiveness. Records whether the therapy was Adjuvant
+      (after the main therapy), Neo-Adjuvant (before the main therapy), or
+      not applicable.
+    range: AdjunctiveTherapyType
+    required: false
+    annotations:
+      sql_column: ADJUNCTIVE_THERAPY
+      sql_type: "NVARCHAR(2)"
+
+  intent_of_treatment:
+    description: >-
+      Intent of the SACT regimen.
+    range: IntentOfTreatment
+    required: false
+    annotations:
+      sql_column: INTENT_OF_TREATMENT
+      sql_type: "NVARCHAR(4)"
+
+  regimen:
+    description: >-
+      The acronym derived from the drugs used in the Anti-Cancer Drug Regimen,
+      used to identify the drugs used in the regimen.
+    range: string
+    required: false
+    annotations:
+      sql_column: REGIMEN
+      sql_type: "NVARCHAR(300)"
+
+  height_start_reg:
+    description: >-
+      Height in metres at start of SACT regimen.
+    range: float
+    unit:
+      ucum_code: m
+    required: false
+    annotations:
+      sql_column: HEIGHT_START_REG
+      sql_type: FLOAT
+
+  weight_start_of_reg:
+    description: >-
+      Weight in kilogrammes at start of SACT regimen.
+    range: float
+    unit:
+      ucum_code: kg
+    required: false
+    annotations:
+      sql_column: WEIGHT_START_OF_REG
+      sql_type: FLOAT
+
+  perf_status_start_reg_ad:
+    description: >-
+      WHO performance status at start of the regimen, for patients aged
+      19 years and above.
+    range: PerformanceStatusAdult
+    required: false
+    annotations:
+      sql_column: PERF_STATUS_START_REG_AD
+      sql_type: "NVARCHAR(2)"
+
+  co_morbidity_adjustment:
+    description: >-
+      Whether the patient's overall physical state (other diseases and
+      conditions) was a significant factor in deciding on the regimen, or in
+      varying the dose or treatment interval.
+    range: YesNoIndicator
+    required: false
+    annotations:
+      sql_column: CO_MORBIDITY_ADJUSTMENT
+      sql_type: "NVARCHAR(2)"
+
+  date_decision_to_treat:
+    description: >-
+      The date on which the consultation between the PATIENT and the clinician
+      took place and a Planned Cancer Treatment was agreed.
+    range: date
+    required: false
+    annotations:
+      sql_column: DATE_DECISION_TO_TREAT
+      sql_type: DATE
+
+  start_date_regimen:
+    description: >-
+      The first administration date of the first cycle of a regimen.
+    range: date
+    required: false
+    annotations:
+      sql_column: START_DATE_REGIMEN
+      sql_type: DATE
+
+  clinical_trial:
+    description: >-
+      Records whether the patient is currently in an active Systemic Anti-Cancer
+      Therapy trial.
+    range: ClinicalTrialIndicator
+    required: false
+    annotations:
+      sql_column: CLINICAL_TRIAL
+      sql_type: "NVARCHAR(4)"
+
+  # ---------------------------------------------------------------------------
+  # Cycle
+  # ---------------------------------------------------------------------------
+
+  cycle_number:
+    description: >-
+      Cycle number, numbered sequentially within each regimen.
+    range: integer
+    required: false
+    annotations:
+      sql_column: CYCLE_NUMBER
+      sql_type: INT
+
+  start_date_cycle:
+    description: >-
+      Date of first drug administration in each cycle.
+    range: date
+    required: false
+    annotations:
+      sql_column: START_DATE_CYCLE
+      sql_type: DATE
+
+  weight_start_cycle:
+    description: >-
+      Weight in kilogrammes at start of the cycle.
+    range: float
+    unit:
+      ucum_code: kg
+    required: false
+    annotations:
+      sql_column: WEIGHT_START_CYCLE
+      sql_type: FLOAT
+
+  perf_stat_start_cycle_ad:
+    description: >-
+      WHO performance status at start of the cycle, for patients aged
+      19 years and above.
+    range: PerformanceStatusAdult
+    required: false
+    annotations:
+      sql_column: PERF_STAT_START_CYCLE_AD
+      sql_type: "NVARCHAR(2)"
+
+  # ---------------------------------------------------------------------------
+  # Drug administration
+  # ---------------------------------------------------------------------------
+
+  drug_name:
+    description: >-
+      The name of the anti-cancer drug, taken from the British National
+      Formulary.
+    range: string
+    required: false
+    annotations:
+      sql_column: DRUG_NAME
+      sql_type: "NVARCHAR(110)"
+
+  dm_d:
+    description: >-
+      The unique ID from the dm+d (Dictionary of Medicines and Devices)
+      database, based around the drug name and manufacturer. Pilot item for
+      v3.0, required only for official Pilot sites.
+    range: string
+    required: false
+    annotations:
+      sql_column: DM_D
+      sql_type: "NVARCHAR(36)"
+      vocabulary: NHS Dictionary of Medicines and Devices (dm+d)
+
+  actual_dose_per_admin:
+    description: >-
+      Dose in mg or other applicable unit for each administration in a SACT
+      cycle.
+    range: string
+    required: false
+    annotations:
+      sql_column: ACTUAL_DOSE_PER_ADMIN
+      sql_type: "NVARCHAR(100)"
+
+  admin_meas_per_actual_dose:
+    description: >-
+      Units of measurement used for each administration in a SACT cycle.
+    range: AdministrationMeasurementCode
+    required: false
+    annotations:
+      sql_column: ADMIN_MEAS_PER_ACTUAL_DOSE
+      sql_type: "NVARCHAR(16)"
+
+  ot_admin_meas_per_actual_dose:
+    description: >-
+      Free-text description of a unit of measurement not available within the
+      coded [admin_meas_per_actual_dose] field. Only populated when code 98
+      (Other) is selected.
+    range: string
+    required: false
+    annotations:
+      sql_column: OT_ADMIN_MEAS_PER_ACTUAL_DOSE
+      sql_type: "NVARCHAR(30)"
+
+  unit_meas_snomed_ct_dm_d:
+    description: >-
+      The SNOMED CT concept ID from the NHS Dictionary of Medicines and Devices
+      identifying the unit of measurement.
+    range: string
+    required: false
+    annotations:
+      sql_column: UNIT_MEAS_SNOMED_CT_DM_D
+      sql_type: "NVARCHAR(36)"
+      vocabulary: SNOMED CT / dm+d
+
+  sact_administration_route:
+    description: >-
+      The prescribed method of delivery for each administration in a SACT
+      cycle.
+    range: SACTAdministrationRouteCode
+    required: false
+    annotations:
+      sql_column: SACT_ADMINISTRATION_ROUTE
+      sql_type: "NVARCHAR(4)"
+
+  route_admin_snomed_ct_dm_d:
+    description: >-
+      The SNOMED CT concept ID from the NHS Dictionary of Medicines and Devices
+      identifying the route of administration.
+    range: string
+    required: false
+    annotations:
+      sql_column: ROUTE_ADMIN_SNOMED_CT_DM_D
+      sql_type: "NVARCHAR(36)"
+      vocabulary: SNOMED CT / dm+d
+
+  administration_date:
+    description: >-
+      The date on which the anti-cancer drug was administered to a patient, an
+      infusion commenced, or an oral drug initially dispensed to the patient.
+    range: date
+    required: false
+    annotations:
+      sql_column: ADMINISTRATION_DATE
+      sql_type: DATE
+
+  org_identifier_sact_admin:
+    description: >-
+      Organisation Identifier of the organisation responsible for each
+      administration in a SACT cycle. Complies with ANANA standard DCB0090.
+    range: string
+    required: false
+    annotations:
+      sql_column: ORG_IDENTIFIER_SACT_ADMIN
+      sql_type: "NVARCHAR(10)"
+
+# ==============================================================================
+# Enumerations
+# ==============================================================================
+
+enums:
+  NHSNumberStatusCode:
+    description: Verification status of the NHS number provided.
+    permissible_values:
+      "01":
+        description: Number present and verified
+      "02":
+        description: Number present but not traced
+      "03":
+        description: Trace required
+      "04":
+        description: Trace attempted - No match or multiple match found
+      "05":
+        description: Trace needs to be resolved - NHS Number or patient detail conflict
+      "06":
+        description: Trace in progress
+      "07":
+        description: Number not present and trace not required
+      "08":
+        description: Trace postponed (baby under six weeks old)
+
+  PersonStatedGenderCode:
+    description: Person's gender as self-declared.
+    permissible_values:
+      "1":
+        description: Male
+      "2":
+        description: Female
+      "9":
+        description: Indeterminate (Unable to be classified as either male or female)
+      X:
+        description: Not Known (PERSON STATED GENDER CODE not recorded)
+
+  AdjunctiveTherapyType:
+    description: >-
+      Whether therapy was given in addition to the main therapy, and if so,
+      whether before or after.
+    permissible_values:
+      "1":
+        description: Adjuvant (after main therapy)
+      "2":
+        description: Neoadjuvant (before main therapy)
+      "3":
+        description: Not Applicable (Primary Treatment)
+      "9":
+        description: Not Known
+
+  IntentOfTreatment:
+    description: Intent of the SACT regimen.
+    permissible_values:
+      A:
+        description: Adjuvant
+      N:
+        description: Neo-Adjuvant
+      C:
+        description: Curative
+      P:
+        description: Palliative
+      D:
+        description: Disease Modification
+      "01":
+        description: Curative - aiming to permanently eradicate disease
+      "02":
+        description: Palliative - aiming to extend life expectancy
+      "03":
+        description: Palliative - aiming to relieve and/or control malignancy related symptoms
+      "04":
+        description: Palliative - aiming to achieve remission
+      "05":
+        description: Palliative - aiming to delay tumour progression
+      "98":
+        description: Other
+      "99":
+        description: Not Known
+
+  PerformanceStatusAdult:
+    description: >-
+      WHO performance status classification for patients aged 19 years and
+      above, indicating activity level and disability.
+    permissible_values:
+      "0":
+        description: Able to carry out all normal activity without restriction
+      "1":
+        description: Restricted in strenuous activity but ambulatory and able to carry out light work
+      "2":
+        description: Ambulatory and capable of all self-care but unable to carry out any work; up and about more than 50% of waking hours
+      "3":
+        description: Symptomatic and in a chair or in bed for greater than 50% of the day but not bedridden
+      "4":
+        description: Completely disabled; cannot carry out any self-care; totally confined to bed or chair
+
+  YesNoIndicator:
+    description: Simple yes/no indicator.
+    permissible_values:
+      Y:
+        description: "Yes"
+      N:
+        description: "No"
+
+  ClinicalTrialIndicator:
+    description: Whether the patient is currently in an active SACT clinical trial.
+    permissible_values:
+      "01":
+        description: Patient is taking part in a clinical trial
+      "02":
+        description: Patient is not taking part in a clinical trial
+      "99":
+        description: Not Known
+
+  AdministrationMeasurementCode:
+    description: Units of measurement used for each drug administration in a SACT cycle.
+    permissible_values:
+      "01":
+        description: mg
+      "02":
+        description: Mcg
+      "03":
+        description: g
+      "04":
+        description: Units
+      "05":
+        description: Cells
+      "06":
+        description: x10^6 PFU
+      "07":
+        description: x10^8 PFU
+      "98":
+        description: Other
+      "99":
+        description: Not Known
+
+  SACTAdministrationRouteCode:
+    description: Prescribed method of delivery for each administration in a SACT cycle.
+    permissible_values:
+      "01":
+        description: Intravenous
+      "02":
+        description: Oral
+      "03":
+        description: Intrathecal
+      "04":
+        description: Intramuscular
+      "05":
+        description: Subcutaneous
+      "06":
+        description: Intraarterial
+      "07":
+        description: Intraperitoneal
+      "08":
+        description: Other intracavity / Intracavernous
+      "09":
+        description: Intravesical (Intra-Vesicular)
+      "10":
+        description: Intratumour / Intralesional
+      "11":
+        description: Cutaneous (Topical)
+      "12":
+        description: Intradermal
+      "13":
+        description: Intratumour
+      "14":
+        description: Intralesional
+      "98":
+        description: Other
