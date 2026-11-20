@@ -43,6 +43,17 @@ uv run mkdocs serve
 
 ---
 
+## HDR UK Gateway metadata
+
+`gateway/` holds what is published to the [HDR UK Health Data Research Gateway](https://healthdatagateway.org):
+
+- `gateway/metadata.yaml`: the catalogue fields (title, abstract, coverage, access and so on), written by hand in the HDRUK 4.1.0 schema's shape. The tables and columns are generated from `schemas/sact.yaml`, so they aren't repeated there.
+- `gateway/gateway.yaml`: the Gateway team, the status to publish with (`DRAFT` or `ACTIVE`), and the Gateway's dataset ID once the dataset has been created.
+
+Everything in `gateway/metadata.yaml` is public once published, including as a draft.
+
+---
+
 ## CI
 
 One required check runs on every PR:
