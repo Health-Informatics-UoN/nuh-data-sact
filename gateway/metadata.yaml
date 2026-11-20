@@ -1,0 +1,76 @@
+# Catalogue fields for the HDR UK Health Data Research Gateway, in HDRUK 4.1.0 shape.
+# The structural metadata (tables, columns, permitted values) is generated from
+# schemas/sact.yaml, so it isn't repeated here. The publish tool also fills identifier,
+# version (the release version), issued, modified, revisions and summary.dataCustodian.
+#
+# Everything here is public once published, including as a DRAFT (readable by ID).
+# Field guidance: https://github.com/HDRUK/schemata-2/tree/master/hdr_schemata/models/HDRUK/4.1.0
+
+summary:
+  title: NUH Systemic Anti-Cancer Therapy Dataset (SACT)
+  abstract: >-
+    Patient-level records of systemic anti-cancer treatments (chemotherapy, targeted
+    therapies, immunotherapy and other drug-based cancer treatments) given at Nottingham
+    University Hospitals NHS Trust from 2009 onwards, covering regimens, cycles and
+    individual drug administrations.
+  contactPoint: andy.rae@nottingham.ac.uk
+  populationSize: 33156
+  keywords:
+    - systemic anti-cancer therapy
+    - SACT
+    - oncology
+    - chemotherapy
+    - NHS
+    - Nottingham
+    - cancer treatment
+    - clinical
+
+documentation:
+  description: >-
+    A pseudonymised research view with one row per drug administration, combining patient,
+    regimen, cycle and drug administration data. It covers patients' pseudonymised NHS
+    number, year and month of birth, gender and Lower Layer Super Output Area; diagnosis
+    (ICD-10, ICD-O-3 morphology, SNOMED CT); regimen (acronym, intent, adjunctive therapy,
+    co-morbidity adjustment, clinical trial flag); cycle (number, start date, weight,
+    performance status); and drug administration (drug name, dm+d code, dose, unit, route,
+    date, administering organisation). The full data dictionary is at
+    https://health-informatics-uon.github.io/nuh-data-sact/. Access requires a data access
+    request.
+
+coverage:
+  spatial: Nottinghamshire, England
+  typicalAgeRangeMin: 18
+  typicalAgeRangeMax: 115
+
+provenance:
+  origin:
+    purpose: [Care]
+    source: [EPR]
+    collectionSource:
+      - Secondary care - In-patients
+      - Secondary care - Outpatients
+    datasetType:
+      - name: Health and disease
+        subTypes: [Cancer]
+      - name: Treatments/Interventions
+        subTypes: [Therapeutic]
+  temporal:
+    publishingFrequency: Quarterly
+    startDate: "2009-01-01"
+    # No endDate for an ongoing dataset: HDRUK allows "CONTINUOUS", but the Gateway's
+    # translation (TRASER, to GWDM 2.2) rejects it.
+    timeLag: 2-6 months
+
+accessibility:
+  access:
+    accessRights: https://health-informatics-uon.github.io/FAIRdata4Research/
+    accessServiceCategory: TRE/SDE
+    jurisdiction: [GB-ENG]
+    dataController: Nottingham University Hospitals NHS Trust
+  formatAndStandards:
+    vocabularyEncodingScheme: [ICD10, ICDO3, SNOMED CT, DM PLUS D]
+    conformsTo: [NHS DATA DICTIONARY]
+    language: [en]
+    format: [CSV]
+
+observations: []
