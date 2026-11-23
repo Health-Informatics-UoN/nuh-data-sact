@@ -20,3 +20,4 @@ Full documentation is at **[health-informatics-uon.github.io/nuh-data-sact](http
 [license-badge]: https://img.shields.io/github/license/health-informatics-uon/nuh-data-sact.svg?style=flat-square
 [docs-badge]: https://img.shields.io/badge/docs-black?style=flat-square&labelColor=%23222
 [github-badge]: https://img.shields.io/badge/github-black?style=flat-square&logo=github&logoColor=white
+
