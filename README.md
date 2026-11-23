@@ -1,6 +1,6 @@
 # NUH SACT Research Metadata
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20645163.svg)](https://doi.org/10.5281/zenodo.20645163)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20645163.svg)](https://doi.org/10.5281/zenodo.24474170)
 [![MIT License][license-badge]][repo]
 [![Repo][github-badge]][repo]
 [![Releases][releases-badge]][releases]
